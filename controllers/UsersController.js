@@ -11,10 +11,13 @@ class UsersController {
       return res.status(400).send({ error: 'Missing password' });
     }
     try {
+      console.log('In the try block');
       const user = await dbClient.usersCollection.findOne({ email });
+      console.log('Checked for user');
       if (user) {
         return res.status(400).send({ error: 'Already exist ' });
       }
+      console.log('User doesnt exist. About to create new user');
       const newUser = await dbClient.usersCollection.insertOne({ email, password: sha1(password) });
       console.log(newUser);
       return res.status(201).send({
@@ -22,6 +25,7 @@ class UsersController {
         id: newUser.ops[0]._id,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).send({ error: 'An error has occured' });
     }
   }

@@ -11,14 +11,13 @@ class UsersController {
       return res.status(400).send({ error: 'Missing password' });
     }
     try {
-      console.log('In the try block');
-      const user = await dbClient.usersCollection.findOne({ email });
-      console.log('Checked for user');
+      const user = await (await dbClient.usersCollection()).findOne({ email });
       if (user) {
         return res.status(400).send({ error: 'Already exist ' });
       }
       console.log('User doesnt exist. About to create new user');
-      const newUser = await dbClient.usersCollection.insertOne({ email, password: sha1(password) });
+      const newUser = await (await dbClient.usersCollection())
+        .insertOne({ email, password: sha1(password) });
       console.log(newUser);
       return res.status(201).send({
         email: newUser.ops[0].email,

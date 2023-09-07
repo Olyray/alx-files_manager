@@ -23,9 +23,9 @@ class DBClient {
     return this.client.db().collection('files').countDocuments();
   }
 
-/*  async usersCollection() {
+  async usersCollection() {
     return this.client.db().collection('users');
-  } */
+  }
 }
 
 const dbClient = new DBClient();

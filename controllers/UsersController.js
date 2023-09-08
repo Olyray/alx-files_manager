@@ -1,5 +1,6 @@
 const sha1 = require('sha1');
 const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
 
 class UsersController {
   static async postNew(req, res) {
@@ -26,6 +27,26 @@ class UsersController {
     } catch (error) {
       console.log(error);
       return res.status(500).send({ error: 'An error has occured' });
+    }
+  }
+
+  static async getMe(req, res) {
+    try {
+      const token = req.headers['x-token'];
+      if (!token) return res.status(401).send({ error: 'Unauthorized' });
+
+      const userId = await redisClient.get(`auth_${token}`);
+      if (!userId) return res.status(401).send({ error: 'Unauthorized' });
+
+      const userCollection = await dbClient.usersCollection();
+      const user = await userCollection.findOne({ _id: new dbClient.client.ObjectId(userId) }, { projection: { password: 0 } });
+
+      if (!user) return res.status(401).send({ error: 'Unauthorized' });
+
+      return res.status(200).send(user);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ error: 'An error has occurred' });
     }
   }
 }

@@ -1,5 +1,5 @@
 const sha1 = require('sha1');
-const dbClient = require('../utils/db');
+const { dbClient, ObjectId } = require('../utils/db');
 const redisClient = require('../utils/redis');
 
 class UsersController {
@@ -39,7 +39,7 @@ class UsersController {
       if (!userId) return res.status(401).send({ error: 'Unauthorized' });
 
       const userCollection = await dbClient.usersCollection();
-      const user = await userCollection.findOne({ _id: new dbClient.client.ObjectId(userId) }, { projection: { password: 0 } });
+      const user = await userCollection.findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } });
 
       if (!user) return res.status(401).send({ error: 'Unauthorized' });
 

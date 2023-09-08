@@ -31,6 +31,7 @@ class AuthController {
       await redisClient.del(`auth_${token}`);
       return res.status(204).send();
     } catch (error) {
+      console.log(error);
       return res.status(500).send({ error: 'An error has occurred' });
     }
   }

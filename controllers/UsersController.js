@@ -39,7 +39,8 @@ class UsersController {
       if (!userId) return res.status(401).send({ error: 'Unauthorized' });
 
       const userCollection = await dbClient.usersCollection();
-      const user = await userCollection.findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } });
+      const user = await userCollection
+        .findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } });
 
       if (!user) return res.status(401).send({ error: 'Unauthorized' });
 
